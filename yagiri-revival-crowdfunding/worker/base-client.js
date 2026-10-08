@@ -18,7 +18,9 @@ export const CF_ITEM_IDS = new Set([
   '155705721', // 380,000円
 ]);
 
-export const TARGET_AMOUNT = 1_000_000;
+export const FIRST_GOAL_AMOUNT = 1_000_000;
+export const NEXT_GOAL_AMOUNT = 2_000_000;
+export const TARGET_AMOUNT = NEXT_GOAL_AMOUNT;
 
 const BASE_API = 'https://api.thebase.in/1';
 const SUMMARY_KEY = 'LATEST_FUND_SUMMARY';

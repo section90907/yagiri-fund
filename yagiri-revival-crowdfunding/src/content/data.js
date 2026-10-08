@@ -56,7 +56,9 @@ export const DAMAGE_DOC_IMAGES = [
 
 export const OFFICIAL_URL = 'https://www.yagiribrewery.com/';
 export const LAW_URL = 'https://www.yagiribrewery.com/law';
-export const TARGET_AMOUNT = 1_000_000;
+export const FIRST_GOAL_AMOUNT = 1_000_000;
+export const NEXT_GOAL_AMOUNT = 2_000_000;
+export const TARGET_AMOUNT = NEXT_GOAL_AMOUNT;
 
 // 令和8年（2026年）10月末（10月31日 23:59:59 JST）終了
 export const CAMPAIGN_END_DATE = new Date('2026-10-31T23:59:59+09:00');

@@ -2,8 +2,10 @@ import { useEffect, useState } from 'react';
 import {
   DAMAGE_DOC_IMAGES,
   FEATURED_IMAGES,
+  FIRST_GOAL_AMOUNT,
   HERO_SLIDES,
   LAW_URL,
+  NEXT_GOAL_AMOUNT,
   OFFICIAL_URL,
   REWARDS,
   TAPROOM_IMAGES,
@@ -251,6 +253,7 @@ export function App() {
             <div className="fund-v4-col">
               <span className="fund-col-label">{t.hero.goalLabel}</span>
               <strong className="fund-col-val nowrap"><Money parts={t.yen(TARGET_AMOUNT)} unitClass="fund-unit" /></strong>
+              <span className="fund-col-subtag">{t.hero.firstGoalAchieved}</span>
             </div>
             <div className="fund-v4-col active-highlight">
               <span className="fund-col-label">{t.hero.totalLabel}</span>
@@ -282,7 +285,7 @@ export function App() {
             </div>
           </div>
 
-          {/* Progress Bar */}
+          {/* Progress Bar with 1M Milestone */}
           <div className="fund-v4-progress-wrap">
             <div
               className="fund-v4-progress-bar"
@@ -293,14 +296,55 @@ export function App() {
               aria-valuemax={100}
             >
               <div className="fund-v4-progress-fill" style={{ width: `${Math.min(100, fundData.percentage)}%` }} />
+              <div className="fund-v4-milestone" style={{ left: '50%' }}>
+                <span className="milestone-line" aria-hidden="true" />
+                <span className="milestone-tag">{t.hero.nextGoalMilestone}</span>
+              </div>
             </div>
             <div className="fund-v4-progress-foot">
-              <span className="fund-v4-status-text">{statusText(t.hero.statusRate)}</span>
+              <span className="fund-v4-status-text">
+                {fundData.totalAmount >= FIRST_GOAL_AMOUNT && <span className="status-highlight">{t.hero.firstGoalAchieved} </span>}
+                {statusText(t.hero.statusRate)}
+              </span>
               <span className="fund-v4-deadline">{t.hero.deadline}</span>
               <span className="fund-v4-date">{t.asOf(fundData.asOf)}</span>
             </div>
           </div>
         </div>
+
+        {/* 5. Thank-You & Next Goal Announcement Card */}
+        <article className="hero-v4-announcement">
+          <div className="announcement-header">
+            <span className="announcement-badge">
+              <span className="badge-star" aria-hidden="true">★</span>
+              {t.hero.announcement.badge}
+            </span>
+            <h2 className="announcement-title">
+              <span className="announcement-title-ln">{t.hero.announcement.heading[0]}</span>
+              <span className="announcement-title-ln announcement-highlight">{t.hero.announcement.heading[1]}</span>
+            </h2>
+          </div>
+          <div className="announcement-body">
+            <p className="announcement-lead">{t.hero.announcement.lead}</p>
+            <div className="announcement-text">
+              {t.hero.announcement.paragraphs.map((p, idx) => (
+                <p key={idx}>{p}</p>
+              ))}
+            </div>
+            <div className="announcement-goals-grid">
+              {t.hero.announcement.goalsSummary.map((g, idx) => (
+                <div key={idx} className={`announcement-goal-card ${idx === 0 ? 'achieved' : 'active'}`}>
+                  <div className="goal-card-top">
+                    <span className="goal-label">{g.label}</span>
+                    <span className="goal-status">{g.status}</span>
+                  </div>
+                  <strong className="goal-amount">{g.amount}</strong>
+                  <p className="goal-desc">{g.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </article>
       </div>
 
       {/* 5. Toast Transition Banner */}
