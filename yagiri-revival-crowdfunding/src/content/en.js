@@ -68,7 +68,7 @@ export const en = {
     remainingDays: (n) => ({ value: n.toLocaleString('en-US'), unit: n === 1 ? ' day' : ' days' }),
     remainingHours: (n) => ({ value: n.toLocaleString('en-US'), unit: n === 1 ? ' hr' : ' hrs' }),
     remainingEnded: () => ({ value: 'Ended', unit: '' }),
-    deadline: 'Until Oct 31, 2026 23:59 JST',
+    deadline: 'Until Nov 3, 2026 23:59 JST',
     badgeGoal: 'Next Goal',
     achieved: 'Goal reached!',
     badgeCurrent: (p) => `Now ${p}%`,
@@ -84,7 +84,7 @@ export const en = {
         'After one night of floodwater submerged our equipment and ingredients with zero insurance compensation, your warm messages and contributions gave us the strength to move forward again.',
         'Reaching ¥1,000,000 gives us the green light to begin urgent repairs and replacement for our three air conditioning units and fermentation chiller.',
         'However, total recovery costs — including sanitizing equipment, sourcing fresh brewing ingredients, and completing full brewery restoration — are estimated at ¥1.8M–¥2.0M.',
-        'Therefore, for the remainder of our campaign until October 31, we have set a Next Goal of ¥2,000,000 to achieve full brewery recovery and ensure our next brew reaches you.',
+        'Therefore, for the remainder of our campaign until November 3, we have set a Next Goal of ¥2,000,000 to achieve full brewery recovery and ensure our next brew reaches you.',
         'Every single yen will be dedicated to reopening our brewery and returning to you with our finest craft beer. We would be grateful for your continued support.',
       ],
       goalsSummary: [

@@ -60,8 +60,8 @@ export const FIRST_GOAL_AMOUNT = 1_000_000;
 export const NEXT_GOAL_AMOUNT = 2_000_000;
 export const TARGET_AMOUNT = NEXT_GOAL_AMOUNT;
 
-// 令和8年（2026年）10月末（10月31日 23:59:59 JST）終了
-export const CAMPAIGN_END_DATE = new Date('2026-10-31T23:59:59+09:00');
+// 令和8年（2026年）11月3日（11月3日 23:59:59 JST）終了
+export const CAMPAIGN_END_DATE = new Date('2026-11-03T23:59:59+09:00');
 
 export const calculateRemaining = (now = new Date(), target = CAMPAIGN_END_DATE) => {
   const diff = target.getTime() - now.getTime();

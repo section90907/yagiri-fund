@@ -54,19 +54,19 @@ test("formatters produce the expected money and date strings", () => {
   assert.equal(en.returns.items[0].alt, "¥3,000 Supporter reward: Original sticker + 1 free drink ticket for the taproom");
 });
 
-test("calculateRemaining counts down correctly to October 31, 2026 23:59:59", () => {
-  const target = new Date("2026-10-31T23:59:59+09:00");
+test("calculateRemaining counts down correctly to November 3, 2026 23:59:59", () => {
+  const target = new Date("2026-11-03T23:59:59+09:00");
   const onSep18 = calculateRemaining(new Date("2026-09-18T19:31:32+09:00"), target);
   assert.equal(onSep18.ended, false);
-  assert.equal(onSep18.days, 43);
+  assert.equal(onSep18.days, 46);
   assert.equal(onSep18.hours, 4);
 
-  const onFinalDay = calculateRemaining(new Date("2026-10-31T10:00:00+09:00"), target);
+  const onFinalDay = calculateRemaining(new Date("2026-11-03T10:00:00+09:00"), target);
   assert.equal(onFinalDay.ended, false);
   assert.equal(onFinalDay.days, 0);
   assert.equal(onFinalDay.hours, 13);
 
-  const afterEnd = calculateRemaining(new Date("2026-11-01T00:00:01+09:00"), target);
+  const afterEnd = calculateRemaining(new Date("2026-11-04T00:00:01+09:00"), target);
   assert.equal(afterEnd.ended, true);
 });
 
