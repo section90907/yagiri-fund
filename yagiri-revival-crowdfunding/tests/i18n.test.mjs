@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { ja } from "../src/content/ja.js";
 import { en } from "../src/content/en.js";
-import { REWARDS, HERO_SLIDES, TAPROOM_IMAGES, DAMAGE_DOC_IMAGES, FEATURED_IMAGES, CAMPAIGN_END_DATE, calculateRemaining } from "../src/content/data.js";
+import { REWARDS, HERO_SLIDES, TAPROOM_IMAGES, DAMAGE_DOC_IMAGES, FEATURED_IMAGES, CAMPAIGN_CLOSED, CAMPAIGN_END_DATE, FINAL_FUND_RESULT, calculateRemaining, finalRate } from "../src/content/data.js";
 
 // Walks both dictionaries together and reports every path whose type or
 // array length differs, so a missing English string fails loudly instead of
@@ -41,8 +41,11 @@ test("per-item copy lines up with the shared page data", () => {
 test("formatters produce the expected money and date strings", () => {
   assert.deepEqual(ja.yen(1_000_000), { prefix: "", value: "1,000,000", unit: "円" });
   assert.deepEqual(en.yen(1_000_000), { prefix: "¥", value: "1,000,000", unit: "" });
-  assert.equal(ja.asOf(new Date(2026, 8, 10)), "2026年9月10日時点");
-  assert.equal(en.asOf(new Date(2026, 8, 10)), "As of Sep 10, 2026");
+  assert.equal(ja.asOf(new Date("2026-09-10T12:00:00+09:00")), "2026年9月10日時点");
+  assert.equal(en.asOf(new Date("2026-09-10T12:00:00+09:00")), "As of Sep 10, 2026");
+  // 日本時間の日付で書く：UTC では 11月12日 15:45 でも、表示は 11月13日
+  assert.equal(ja.asOf(new Date("2026-11-12T15:45:25Z")), "2026年11月13日時点");
+  assert.equal(en.asOf(new Date("2026-11-12T15:45:25Z")), "As of Nov 13, 2026");
   assert.deepEqual(ja.hero.remainingDays(43), { value: "43", unit: "日" });
   assert.deepEqual(en.hero.remainingDays(43), { value: "43", unit: " days" });
   assert.deepEqual(en.hero.remainingDays(1), { value: "1", unit: " day" });
@@ -68,6 +71,22 @@ test("calculateRemaining counts down correctly to November 3, 2026 23:59:59", ()
 
   const afterEnd = calculateRemaining(new Date("2026-11-04T00:00:01+09:00"), target);
   assert.equal(afterEnd.ended, true);
+});
+
+test("the closed page shows the final figures fixed on 2026-11-13", () => {
+  // ユーザーが確認した値（集計API 2026-11-12T15:45:25Z 時点）。勝手に書き換えない。
+  assert.equal(FINAL_FUND_RESULT.totalAmount, 1_238_000);
+  assert.equal(FINAL_FUND_RESULT.supportersCount, 109);
+  // 達成率は第1目標 100万円に対する割合で、100% で頭打ちにしない
+  assert.equal(finalRate(FINAL_FUND_RESULT.totalAmount), 124);
+  assert.equal(finalRate(1_000_000), 100);
+  assert.equal(finalRate(1_234_999), 123);
+  // 最終値の時刻は締切より後なので、ページは必ず終了表示になる
+  assert.equal(calculateRemaining(FINAL_FUND_RESULT.asOf, CAMPAIGN_END_DATE).ended, true);
+  assert.equal(CAMPAIGN_CLOSED, true);
+  assert.equal(ja.hero.statusRate(124), "達成率 124%");
+  assert.equal(ja.returns.closed, "受付終了");
+  assert.equal(en.returns.closed, "Closed");
 });
 
 test("English copy keeps the flood measurements straight", () => {

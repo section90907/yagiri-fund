@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import {
   DAMAGE_DOC_IMAGES,
+  CAMPAIGN_CLOSED,
   FEATURED_IMAGES,
+  FINAL_FUND_RESULT,
   FIRST_GOAL_AMOUNT,
   HERO_SLIDES,
   LAW_URL,
@@ -11,6 +13,7 @@ import {
   TAPROOM_IMAGES,
   TARGET_AMOUNT,
   calculateRemaining,
+  finalRate,
   itemUrl,
 } from './content/data.js';
 import { CONTENT, LanguageSwitch, useLanguage } from './i18n.jsx';
@@ -55,15 +58,20 @@ export function App() {
   const [slideIndex, setSlideIndex] = useState(0);
   const [showBar, setShowBar] = useState(false);
   const [remaining, setRemaining] = useState(() => calculateRemaining());
-  const [fundData, setFundData] = useState({
+  const [liveFund, setLiveFund] = useState({
     totalAmount: 0,
     supportersCount: 0,
     percentage: 0,
-    asOf: new Date(2026, 8, 10),
+    asOf: new Date('2026-09-10T00:00:00+09:00'),
     itemSales: {},
   });
+  // 募集終了後は集計APIを読まず、FINAL_FUND_RESULT で固定する（data.js）。
+  const closed = CAMPAIGN_CLOSED || remaining.ended;
+  const fundData = closed ? FINAL_FUND_RESULT : liveFund;
+  const closedRate = finalRate(FINAL_FUND_RESULT.totalAmount);
 
   useEffect(() => {
+    if (CAMPAIGN_CLOSED || calculateRemaining().ended) return undefined;
     let isMounted = true;
     fetch(`${FUND_API_ORIGIN}/api/fund-summary`)
       .then((res) => {
@@ -73,7 +81,7 @@ export function App() {
       .then((data) => {
         if (!isMounted || !data) return;
         const totalAmount = Number(data.totalAmount) || 0;
-        setFundData({
+        setLiveFund({
           totalAmount,
           supportersCount: Number(data.supportersCount) || 0,
           percentage: Math.min(100, Math.round((totalAmount / TARGET_AMOUNT) * 1000) / 10),
@@ -149,6 +157,7 @@ export function App() {
     ['#faq', t.nav.faq],
   ];
   const statusText = (current) => {
+    if (closed) return t.hero.statusRate(closedRate);
     if (fundData.percentage >= 100) return t.hero.achieved;
     return fundData.totalAmount > 0 ? current(fundData.percentage) : t.hero.starting;
   };
@@ -161,7 +170,7 @@ export function App() {
       </nav>
       <div className="header-actions">
         <LanguageSwitch lang={lang} onChange={setLang} label={t.langSwitch.groupLabel} />
-        <button className="primary small header-cta" onClick={go} {...GENERAL_CTA}>{t.header.cta}</button>
+        {!closed && <button className="primary small header-cta" onClick={go} {...GENERAL_CTA}>{t.header.cta}</button>}
       </div>
       <button
         className="menu-toggle"
@@ -186,7 +195,7 @@ export function App() {
             {navLinks.map(([href, label]) => <a key={href} href={href} onClick={() => setMenuOpen(false)}>{label}</a>)}
             <a href={OFFICIAL_URL} target="_blank" rel="noopener noreferrer">{t.nav.official}</a>
           </nav>
-          <button className="primary" onClick={go} style={{ marginTop: '20px', width: '100%' }} {...GENERAL_CTA}>{t.header.mobileCta}</button>
+          {!closed && <button className="primary" onClick={go} style={{ marginTop: '20px', width: '100%' }} {...GENERAL_CTA}>{t.header.mobileCta}</button>}
         </div>
       </div>
     )}
@@ -234,15 +243,17 @@ export function App() {
 
         {/* 3. Primary Orange Heart CTA Button */}
         <div className="hero-v4-cta-wrap">
-          <button className="hero-v4-cta-btn" onClick={go} {...GENERAL_CTA}>
+          <button className="hero-v4-cta-btn" {...(closed ? { disabled: true } : { onClick: go, ...GENERAL_CTA })}>
             <span className="cta-heart-icon" aria-hidden="true">
               <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor">
                 <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
               </svg>
             </span>
             <div className="cta-text-group">
-              <strong className="cta-main-text">{t.hero.ctaMain} <span className="cta-arrow">›</span></strong>
-              <small className="cta-sub-text">{t.hero.ctaSub}</small>
+              <strong className="cta-main-text">
+                {closed ? t.hero.closed.ctaMain : <>{t.hero.ctaMain} <span className="cta-arrow">›</span></>}
+              </strong>
+              <small className="cta-sub-text">{closed ? t.hero.closed.ctaSub : t.hero.ctaSub}</small>
             </div>
           </button>
         </div>
@@ -251,12 +262,12 @@ export function App() {
         <div className="fund-v4-status">
           <div className="fund-v4-figures">
             <div className="fund-v4-col">
-              <span className="fund-col-label">{t.hero.goalLabel}</span>
-              <strong className="fund-col-val nowrap"><Money parts={t.yen(TARGET_AMOUNT)} unitClass="fund-unit" /></strong>
+              <span className="fund-col-label">{closed ? t.hero.closed.goalLabel : t.hero.goalLabel}</span>
+              <strong className="fund-col-val nowrap"><Money parts={t.yen(closed ? FIRST_GOAL_AMOUNT : TARGET_AMOUNT)} unitClass="fund-unit" /></strong>
               <span className="fund-col-subtag">{t.hero.firstGoalAchieved}</span>
             </div>
             <div className="fund-v4-col active-highlight">
-              <span className="fund-col-label">{t.hero.totalLabel}</span>
+              <span className="fund-col-label">{closed ? t.hero.closed.totalLabel : t.hero.totalLabel}</span>
               <strong className="fund-col-val accent nowrap"><Money parts={t.yen(fundData.totalAmount)} unitClass="fund-unit" /></strong>
             </div>
             <div className="fund-v4-col">
@@ -264,7 +275,7 @@ export function App() {
               <strong className="fund-col-val nowrap"><Money parts={t.hero.supporters(fundData.supportersCount)} unitClass="fund-unit" /></strong>
             </div>
             <div className="fund-v4-col">
-              <span className="fund-col-label">{t.hero.remainingLabel}</span>
+              <span className="fund-col-label">{closed ? t.hero.closed.remainingLabel : t.hero.remainingLabel}</span>
               <strong className="fund-col-val nowrap">
                 <Money
                   parts={
@@ -279,8 +290,8 @@ export function App() {
               </strong>
             </div>
             <div className="fund-v4-badge">
-              <span className="badge-sub">{t.hero.badgeGoal}</span>
-              <strong className="badge-amount"><Money parts={t.yen(TARGET_AMOUNT)} unitTag="small" /></strong>
+              <span className="badge-sub">{closed ? t.hero.closed.goalLabel : t.hero.badgeGoal}</span>
+              <strong className="badge-amount"><Money parts={t.yen(closed ? FIRST_GOAL_AMOUNT : TARGET_AMOUNT)} unitTag="small" /></strong>
               <span className="badge-sub">{statusText(t.hero.badgeCurrent)}</span>
             </div>
           </div>
@@ -290,23 +301,26 @@ export function App() {
             <div
               className="fund-v4-progress-bar"
               role="progressbar"
-              aria-label={t.hero.progressLabel}
-              aria-valuenow={fundData.percentage}
+              aria-label={closed ? t.hero.closed.progressLabel : t.hero.progressLabel}
+              aria-valuenow={closed ? Math.min(100, closedRate) : fundData.percentage}
+              aria-valuetext={closed ? t.hero.statusRate(closedRate) : undefined}
               aria-valuemin={0}
               aria-valuemax={100}
             >
-              <div className="fund-v4-progress-fill" style={{ width: `${Math.min(100, fundData.percentage)}%` }} />
-              <div className="fund-v4-milestone" style={{ left: '50%' }}>
-                <span className="milestone-line" aria-hidden="true" />
-                <span className="milestone-tag">{t.hero.nextGoalMilestone}</span>
-              </div>
+              <div className="fund-v4-progress-fill" style={{ width: `${Math.min(100, closed ? closedRate : fundData.percentage)}%` }} />
+              {!closed && (
+                <div className="fund-v4-milestone" style={{ left: '50%' }}>
+                  <span className="milestone-line" aria-hidden="true" />
+                  <span className="milestone-tag">{t.hero.nextGoalMilestone}</span>
+                </div>
+              )}
             </div>
             <div className="fund-v4-progress-foot">
               <span className="fund-v4-status-text">
                 {fundData.totalAmount >= FIRST_GOAL_AMOUNT && <span className="status-highlight">{t.hero.firstGoalAchieved} </span>}
                 {statusText(t.hero.statusRate)}
               </span>
-              <span className="fund-v4-deadline">{t.hero.deadline}</span>
+              <span className="fund-v4-deadline">{closed ? t.hero.closed.deadline : t.hero.deadline}</span>
               <span className="fund-v4-date">{t.asOf(fundData.asOf)}</span>
             </div>
           </div>
@@ -336,7 +350,7 @@ export function App() {
                 <div key={idx} className={`announcement-goal-card ${idx === 0 ? 'achieved' : 'active'}`}>
                   <div className="goal-card-top">
                     <span className="goal-label">{g.label}</span>
-                    <span className="goal-status">{g.status}</span>
+                    <span className="goal-status">{closed && idx === 1 ? t.hero.closed.nextGoalStatus : g.status}</span>
                   </div>
                   <strong className="goal-amount">{g.amount}</strong>
                   <p className="goal-desc">{g.desc}</p>
@@ -458,7 +472,7 @@ export function App() {
         <div>
           {t.damage.appeal.paragraphs.map((p) => <p key={p}>{p}</p>)}
           <p><strong><Lines lines={t.damage.appeal.ask} /></strong></p>
-          <button className="primary" onClick={go} {...GENERAL_CTA}>{t.damage.appeal.cta}</button>
+          {!closed && <button className="primary" onClick={go} {...GENERAL_CTA}>{t.damage.appeal.cta}</button>}
         </div>
       </div>
     </section>
@@ -487,12 +501,12 @@ export function App() {
     <section className="join section">
       <header><p className="section-label">{t.join.label}</p><h2><Lines lines={t.join.heading} /></h2><p>{t.join.intro}</p></header>
       <div className="featured-grid">
-        {t.join.featured.map(({ title, copy, price }, i) => <button key={title} onClick={go} className="featured-card" {...featuredAttrs(i)}>
+        {t.join.featured.map(({ title, copy, price }, i) => <button key={title} onClick={go} className="featured-card" {...(closed ? {} : featuredAttrs(i))}>
           <img src={FEATURED_IMAGES[i]} alt={t.join.featuredAlt(title, price)} loading="lazy" decoding="async" />
           <span><b>{title}</b><small>{copy}</small><strong>{price}</strong></span>
         </button>)}
       </div>
-      <button className="text-link" onClick={go} {...GENERAL_CTA}>{t.join.seeAll}</button>
+      <button className="text-link" onClick={go} {...(closed ? {} : GENERAL_CTA)}>{t.join.seeAll}</button>
     </section>
 
     <section id="returns" className="returns section">
@@ -500,7 +514,8 @@ export function App() {
       <div className="reward-list">
         {REWARDS.map((reward, i) => {
           const copy = t.returns.items[i];
-          const sold = fundData.itemSales[reward.itemId] || 0;
+          // 残り口数は募集中だけ表示する（終了後の FINAL_FUND_RESULT は売れた口数を持たない）
+          const sold = liveFund.itemSales[reward.itemId] || 0;
           const currentLeft = Math.max(0, reward.left - sold);
           return (
             <article key={reward.itemId}>
@@ -513,10 +528,12 @@ export function App() {
                 </div>
               )}
               <ul className="reward-meta">
-                <li>{currentLeft === 0 ? <strong style={{ color: '#dc2626' }}>{t.returns.soldOut}</strong> : t.returns.left(currentLeft)}</li>
+                {!closed && <li>{currentLeft === 0 ? <strong style={{ color: '#dc2626' }}>{t.returns.soldOut}</strong> : t.returns.left(currentLeft)}</li>}
                 <li>{t.returns.delivery}</li>
               </ul>
-              <a className="reward-cta" href={itemUrl(reward.itemId)} target="_blank" rel="noopener noreferrer" {...checkoutAttrs(rewardName(i), reward.price)}>{t.returns.cta}</a>
+              {closed
+                ? <span className="reward-cta is-closed" aria-disabled="true">{t.returns.closed}</span>
+                : <a className="reward-cta" href={itemUrl(reward.itemId)} target="_blank" rel="noopener noreferrer" {...checkoutAttrs(rewardName(i), reward.price)}>{t.returns.cta}</a>}
             </article>
           );
         })}
@@ -597,16 +614,25 @@ export function App() {
 
     <section className="closing section">
       <img src="/assets/yagiri-river.png" alt={t.closing.imageAlt} loading="lazy" decoding="async" />
-      <div><h2><Lines lines={t.closing.heading} /></h2><p><Lines lines={t.closing.body} /></p><button className="primary" onClick={go} {...GENERAL_CTA}>{t.closing.cta}</button></div>
+      <div><h2><Lines lines={t.closing.heading} /></h2><p><Lines lines={t.closing.body} /></p>{!closed && <button className="primary" onClick={go} {...GENERAL_CTA}>{t.closing.cta}</button>}</div>
       <strong>{t.closing.tagline}</strong>
     </section>
 
     <footer><div><b>{t.footer.company}</b><span>{t.footer.place}</span></div><a className="footer-official" href={OFFICIAL_URL} target="_blank" rel="noopener noreferrer">{t.footer.official}<span aria-hidden="true">↗</span></a></footer>
 
-    <div className={showBar ? 'support-bar show' : 'support-bar'}>
-      <div className="support-bar-figure"><small>{t.supportBar.label}</small><strong><Money parts={t.yen(TARGET_AMOUNT)} /></strong></div>
-      <p className="support-bar-note">{t.supportBar.note[0]}<br />{t.supportBar.note[1]}</p>
-      <button className="primary small" onClick={go} {...GENERAL_CTA}>{t.supportBar.cta}</button>
+    <div className={['support-bar', showBar && 'show', closed && 'is-closed'].filter(Boolean).join(' ')}>
+      {closed ? (
+        <>
+          <div className="support-bar-figure"><small>{t.supportBar.closed.label}</small><strong><Money parts={t.yen(FINAL_FUND_RESULT.totalAmount)} /></strong></div>
+          <p className="support-bar-note">{t.supportBar.closed.note[0]}<br />{t.supportBar.closed.note[1]}</p>
+        </>
+      ) : (
+        <>
+          <div className="support-bar-figure"><small>{t.supportBar.label}</small><strong><Money parts={t.yen(TARGET_AMOUNT)} /></strong></div>
+          <p className="support-bar-note">{t.supportBar.note[0]}<br />{t.supportBar.note[1]}</p>
+          <button className="primary small" onClick={go} {...GENERAL_CTA}>{t.supportBar.cta}</button>
+        </>
+      )}
     </div>
 
   </main>;

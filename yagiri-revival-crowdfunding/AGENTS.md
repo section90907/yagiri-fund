@@ -89,11 +89,24 @@ the brand gold and the serif headings stay:
 - `.reward-list` — reward cards (3-up → 2-up at 1080 → 1-up at 620), replacing the dense table
 - `.hero-tags` — plain `#tag` text, not chips
 
-**Placeholder discipline**: 応援購入総額・達成率・サポーター数・残り日数 have no real values.
-They render as `—` with class `.tbd`, the panel carries a `.fund-note` saying so, and the
-footer repeats it. Never invent a supporter count, a percentage, or a deadline — ask.
-Real values currently on the page: 目標金額 1,000,000円 / ネクストゴール 2,000,000円 /
-復旧費用 約180万円 / 発送 2027年1月以降 / 残り口数 (from the original reward table).
+**Figures discipline**: never invent a supporter count, a percentage, or a deadline — ask.
+(The earlier `—` / `.tbd` placeholders were replaced by the BASE aggregation API, and then by
+the fixed final figures below.)
+
+## Campaign closed (durable, 2026-11-13)
+
+The campaign ended 2026-11-03 23:59 JST. The page is pinned to its closed state by
+`CAMPAIGN_CLOSED = true` in `src/content/data.js` (so a viewer's wrong device clock cannot
+bring the purchase links back). `App.jsx` switches on `closed` in one place.
+
+- Figures are fixed in `FINAL_FUND_RESULT`: **1,238,000円 / 109人**, as of the aggregation API
+  at 2026-11-12T15:45:25Z, chosen by the user. Do not re-fetch or edit them without asking.
+- 達成率 is measured against the **first goal 1,000,000円 → 124%** (`finalRate`, not capped at 100).
+- The hero CTA and each reward's button render as a disabled 「受付終了」; every other
+  「支援する」 button is gone; the sticky bar shows 最終支援総額 + thanks (also on mobile).
+  No element may carry `data-reward` (Meta Pixel InitiateCheckout) and no BASE item link remains.
+- Dates (`asOf`) are formatted in `Asia/Tokyo`, otherwise viewers west of JST see a different day
+  than the JST prerender and hydration falls back to a full client render.
 
 ## Narrative structure (durable)
 

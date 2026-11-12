@@ -1394,3 +1394,19 @@ body .people>.beliefs article>span:not(.ln),
 .official-link:hover,.footer-official:hover{color:var(--orange-dark)}
 .official-link span,.footer-official span{font-size:.9em}
 @media(max-width:620px){.footer-official{margin-top:14px}}
+
+/* ---------- CAMPAIGN CLOSED (2026-11-03 23:59 JST 以降) ----------
+   ヒーローの大ボタンとリターンの「詳しく見る」は、押せない「受付終了」表示に変わる（App.jsx の closed）。 */
+.hero-v4-cta-btn:disabled,
+.hero-v4-cta-btn:disabled:hover,
+.hero-v4-cta-btn:disabled:active{
+  background:#707070;box-shadow:none;transform:none;cursor:default;justify-content:center;text-align:center}
+.hero-v4-cta-btn:disabled .cta-heart-icon{display:none}
+.reward-list article .reward-cta.is-closed,
+.reward-list article .reward-cta.is-closed:hover{
+  border-color:#cbcbcb;background:#f2f2f2;color:#707070;cursor:default}
+/* 募集中のスマホでは注記を隠す（design-v2.css）。終了後はお礼なので、スマホでも出す。 */
+@media(max-width:760px){
+  .support-bar.is-closed{grid-template-columns:auto 1fr}
+  .support-bar.is-closed .support-bar-note{display:block}
+}

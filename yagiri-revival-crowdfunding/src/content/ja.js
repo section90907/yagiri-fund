@@ -7,7 +7,10 @@ export const ja = {
   documentTitle: '水に沈んだ醸造所を、もう一度。｜矢切ブルワリー 復旧クラウドファンディング',
   yen: (n) => ({ prefix: '', value: n.toLocaleString('ja-JP'), unit: '円' }),
   priceLabel: (n) => `${n.toLocaleString('ja-JP')}円`,
-  asOf: (d) => `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日時点`,
+  // 日付は日本時間で書く。閲覧者のタイムゾーンで書くと、海外では日付がずれ、
+  // 日本時間でビルドしたプリレンダーと食い違う（hydration が崩れる）。
+  asOf: (d) =>
+    `${d.toLocaleDateString('ja-JP', { timeZone: 'Asia/Tokyo', year: 'numeric', month: 'long', day: 'numeric' })}時点`,
 
   langSwitch: { groupLabel: '言語 / Language' },
 
@@ -70,6 +73,17 @@ export const ja = {
     starting: '挑戦スタート！',
     progressLabel: 'ネクストゴールの達成率',
     nextGoalMilestone: '第1目標 100万円達成',
+    // 募集終了後（2026年11月3日 23:59 以降）の表示
+    closed: {
+      ctaMain: '受付終了',
+      nextGoalStatus: '募集終了',
+      ctaSub: 'たくさんのご支援、ありがとうございました',
+      goalLabel: '目標金額',
+      totalLabel: '最終支援総額',
+      remainingLabel: '募集状況',
+      deadline: '2026年11月3日 23:59 募集終了',
+      progressLabel: '目標金額の達成率',
+    },
     announcement: {
       badge: '第1目標 100万円達成の御礼',
       heading: ['温かいご支援をありがとうございます。', 'ネクストゴール200万円へ挑戦します！'],
@@ -227,6 +241,7 @@ export const ja = {
     left: (n) => `残り ${n}口`,
     delivery: '2027年1月以降お届け予定',
     cta: '詳しく見る',
+    closed: '受付終了',
   },
 
   labels: {
@@ -327,5 +342,9 @@ export const ja = {
     label: 'ネクストゴール',
     note: ['第1目標の100万円を達成！', '完全復旧に向け、ネクストゴール200万円に挑戦中。'],
     cta: 'このプロジェクトを支援する',
+    closed: {
+      label: '最終支援総額',
+      note: ['募集は2026年11月3日に終了しました。', 'たくさんのご支援、ありがとうございました。'],
+    },
   },
 };

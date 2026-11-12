@@ -12,8 +12,9 @@ export const en = {
   documentTitle: 'Our brewery went under water. Help us brew again | Yagiri Brewery Recovery Crowdfunding',
   yen: (n) => ({ prefix: '¥', value: n.toLocaleString('en-US'), unit: '' }),
   priceLabel: yenString,
+  // Dates are written in Japan time so they match the prerender (see ja.js).
   asOf: (d) =>
-    `As of ${d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}`,
+    `As of ${d.toLocaleDateString('en-US', { timeZone: 'Asia/Tokyo', year: 'numeric', month: 'short', day: 'numeric' })}`,
 
   langSwitch: { groupLabel: 'Language / 言語' },
 
@@ -76,6 +77,17 @@ export const en = {
     starting: 'Just getting started!',
     progressLabel: 'Progress toward the next goal',
     nextGoalMilestone: '1st Goal ¥1M reached',
+    // Shown after the campaign ended (Nov 3, 2026 23:59 JST)
+    closed: {
+      ctaMain: 'Closed',
+      nextGoalStatus: 'Closed',
+      ctaSub: 'Thank you for all your support',
+      goalLabel: 'Goal',
+      totalLabel: 'Final total',
+      remainingLabel: 'Status',
+      deadline: 'Ended Nov 3, 2026 23:59 JST',
+      progressLabel: 'Progress toward the goal',
+    },
     announcement: {
       badge: 'First Goal Reached — Thank You!',
       heading: ['Our deepest thanks to all supporters.', 'Now challenging our Next Goal of ¥2,000,000!'],
@@ -236,6 +248,7 @@ export const en = {
     left: (n) => `${n} left`,
     delivery: 'Estimated delivery: January 2027 or later',
     cta: 'View details',
+    closed: 'Closed',
   },
 
   labels: {
@@ -336,5 +349,9 @@ export const en = {
     label: 'Next goal',
     note: ['First goal of ¥1,000,000 reached!', 'Now aiming for our Next Goal of ¥2,000,000.'],
     cta: 'Support this project',
+    closed: {
+      label: 'Final total',
+      note: ['The campaign ended on Nov 3, 2026.', 'Thank you so much for your support.'],
+    },
   },
 };

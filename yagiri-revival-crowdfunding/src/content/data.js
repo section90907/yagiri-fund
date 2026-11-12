@@ -63,6 +63,21 @@ export const TARGET_AMOUNT = NEXT_GOAL_AMOUNT;
 // 令和8年（2026年）11月3日（11月3日 23:59:59 JST）終了
 export const CAMPAIGN_END_DATE = new Date('2026-11-03T23:59:59+09:00');
 
+// 募集は終了済み。閲覧者の端末の時計が締切より前にずれていても、終了表示から戻さない。
+export const CAMPAIGN_CLOSED = true;
+
+// 募集終了後に表示する最終値。2026-11-13 に集計API（/api/fund-summary）から取った値で、
+// 公開してよいことはユーザーが確認済み。募集が終わったあとは BASE を読み直さず、この値で固定する
+// （締切後の注文やキャンセルで表示が動かないようにするため）。
+export const FINAL_FUND_RESULT = {
+  totalAmount: 1_238_000,
+  supportersCount: 109,
+  asOf: new Date('2026-11-12T15:45:25.372Z'),
+};
+
+// 第1目標に対する達成率（%・整数）。100% で頭打ちにしない。
+export const finalRate = (total, goal = FIRST_GOAL_AMOUNT) => Math.round((total / goal) * 100);
+
 export const calculateRemaining = (now = new Date(), target = CAMPAIGN_END_DATE) => {
   const diff = target.getTime() - now.getTime();
   if (diff <= 0) {
