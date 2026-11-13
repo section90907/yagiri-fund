@@ -108,6 +108,7 @@ bring the purchase links back). `App.jsx` switches on `closed` in one place.
 - The ネクストゴール (200万円) wording was removed from everything the closed page displays
   (thank-you card, its goal card, 資金の使い道, `public/crowdfunding-a4.html`) at the user's request.
   Do not bring it back. Keys used only by the pre-close display (`hero.goalLabel` etc.) still say it.
+  The thank-you card's 「総額約180万円〜200万円が必要です」 paragraph was removed the same day.
 - Dates (`asOf`) are formatted in `Asia/Tokyo`, otherwise viewers west of JST see a different day
   than the JST prerender and hydration falls back to a full client render.
 

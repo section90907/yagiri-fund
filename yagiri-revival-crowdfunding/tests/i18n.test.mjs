@@ -95,6 +95,9 @@ test("the closed page no longer mentions the next goal", () => {
     const shown = JSON.stringify([dict.hero.announcement, dict.hero.closed, dict.recovery, dict.supportBar.closed]);
     assert.doesNotMatch(shown, pattern, name);
   }
+  // 御礼カードの「総額約180万円〜200万円が必要です」の段落も削除した（2026-11-13、ユーザー指示）
+  assert.doesNotMatch(JSON.stringify(ja.hero.announcement), /200万円/);
+  assert.doesNotMatch(JSON.stringify(en.hero.announcement), /¥2\.0M|¥2,000,000/);
 });
 
 test("English copy keeps the flood measurements straight", () => {
