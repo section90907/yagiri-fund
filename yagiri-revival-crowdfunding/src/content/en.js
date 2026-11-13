@@ -80,7 +80,6 @@ export const en = {
     // Shown after the campaign ended (Nov 3, 2026 23:59 JST)
     closed: {
       ctaMain: 'Closed',
-      nextGoalStatus: 'Closed',
       ctaSub: 'Thank you for all your support',
       goalLabel: 'Goal',
       totalLabel: 'Final total',
@@ -96,12 +95,10 @@ export const en = {
         'After one night of floodwater submerged our equipment and ingredients with zero insurance compensation, your warm messages and contributions gave us the strength to move forward again.',
         'Reaching ¥1,000,000 gives us the green light to begin urgent repairs and replacement for our three air conditioning units and fermentation chiller.',
         'However, total recovery costs — including sanitizing equipment, sourcing fresh brewing ingredients, and completing full brewery restoration — are estimated at ¥1.8M–¥2.0M.',
-        'Therefore, for the remainder of our campaign until November 3, we have set a Next Goal of ¥2,000,000 to achieve full brewery recovery and ensure our next brew reaches you.',
         'Every single yen will be dedicated to reopening our brewery and returning to you with our finest craft beer.',
       ],
       goalsSummary: [
         { label: 'First Goal', amount: '¥1,000,000', status: 'Reached!', desc: 'Urgent repairs for air conditioners and chiller' },
-        { label: 'Next Goal', amount: '¥2,000,000', status: 'In Progress', desc: 'Full restoration, deep sanitization & fresh ingredients' },
       ],
     },
     toastLead: ["Let's raise a glass", 'here again.'],
@@ -201,7 +198,7 @@ export const en = {
     ],
     totalLabel: 'Estimated recovery cost',
     totalValue: 'about ¥1.8M',
-    reach: 'Thanks to your generous support, our first goal of ¥1,000,000 has been reached! Reaching our Next Goal of ¥2,000,000 will fully cover the recovery costs (~¥1.8M) plus initial brewing ingredients.',
+    reach: ['Thanks to your generous support,', 'our first goal of ¥1,000,000 has been reached!'],
     waterlineAlt: 'Flood mark left inside the prefab walk-in cooler',
     waterlineLabel: 'Water inside the cooler',
   },

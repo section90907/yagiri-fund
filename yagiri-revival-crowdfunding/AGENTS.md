@@ -105,6 +105,9 @@ bring the purchase links back). `App.jsx` switches on `closed` in one place.
 - The hero CTA and each reward's button render as a disabled 「受付終了」; every other
   「支援する」 button is gone; the sticky bar shows 最終支援総額 + thanks (also on mobile).
   No element may carry `data-reward` (Meta Pixel InitiateCheckout) and no BASE item link remains.
+- The ネクストゴール (200万円) wording was removed from everything the closed page displays
+  (thank-you card, its goal card, 資金の使い道, `public/crowdfunding-a4.html`) at the user's request.
+  Do not bring it back. Keys used only by the pre-close display (`hero.goalLabel` etc.) still say it.
 - Dates (`asOf`) are formatted in `Asia/Tokyo`, otherwise viewers west of JST see a different day
   than the JST prerender and hydration falls back to a full client render.
 

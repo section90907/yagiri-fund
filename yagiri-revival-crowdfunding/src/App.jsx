@@ -326,7 +326,7 @@ export function App() {
           </div>
         </div>
 
-        {/* 5. Thank-You & Next Goal Announcement Card */}
+        {/* 5. Thank-You Announcement Card */}
         <article className="hero-v4-announcement">
           <div className="announcement-header">
             <span className="announcement-badge">
@@ -351,7 +351,7 @@ export function App() {
                 <div key={idx} className={`announcement-goal-card ${idx === 0 ? 'achieved' : 'active'}`}>
                   <div className="goal-card-top">
                     <span className="goal-label">{g.label}</span>
-                    <span className="goal-status">{closed && idx === 1 ? t.hero.closed.nextGoalStatus : g.status}</span>
+                    <span className="goal-status">{g.status}</span>
                   </div>
                   <strong className="goal-amount">{g.amount}</strong>
                   <p className="goal-desc">{g.desc}</p>
@@ -490,7 +490,7 @@ export function App() {
           {t.recovery.items.map((item, i) => <li key={item.title}><span>{String(i + 1).padStart(2, '0')}</span><div><b>{item.title}</b><small>{item.note}</small></div></li>)}
         </ol>
         <p className="total">{t.recovery.totalLabel} <strong>{t.recovery.totalValue}</strong></p>
-        <p className="reach">{t.recovery.reach}</p>
+        <p className="reach"><Lines lines={t.recovery.reach} /></p>
       </div>
       <figure className="waterline">
         <img src="/assets/flood-waterline.webp" alt={t.recovery.waterlineAlt} loading="lazy" decoding="async" />

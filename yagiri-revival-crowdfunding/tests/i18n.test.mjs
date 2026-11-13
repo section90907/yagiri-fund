@@ -89,6 +89,14 @@ test("the closed page shows the final figures fixed on 2026-11-13", () => {
   assert.equal(en.returns.closed, "Closed");
 });
 
+test("the closed page no longer mentions the next goal", () => {
+  // 終了後に表示される文言から「ネクストゴール」を削除した（2026-11-13、ユーザー指示）
+  for (const [name, dict, pattern] of [["ja", ja, /ネクストゴール/], ["en", en, /next goal/i]]) {
+    const shown = JSON.stringify([dict.hero.announcement, dict.hero.closed, dict.recovery, dict.supportBar.closed]);
+    assert.doesNotMatch(shown, pattern, name);
+  }
+});
+
 test("English copy keeps the flood measurements straight", () => {
   // 40cm = inside the walk-in cooler, 45cm = insurance threshold (see AGENTS.md)
   const insurance = en.damage.details[0].body;
