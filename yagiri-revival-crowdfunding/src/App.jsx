@@ -334,8 +334,9 @@ export function App() {
               {t.hero.announcement.badge}
             </span>
             <h2 className="announcement-title">
-              <span className="announcement-title-ln">{t.hero.announcement.heading[0]}</span>
-              <span className="announcement-title-ln announcement-highlight">{t.hero.announcement.heading[1]}</span>
+              {t.hero.announcement.heading.map((line, i) => (
+                <span key={line} className={i === 0 ? 'announcement-title-ln' : 'announcement-title-ln announcement-highlight'}>{line}</span>
+              ))}
             </h2>
           </div>
           <div className="announcement-body">
